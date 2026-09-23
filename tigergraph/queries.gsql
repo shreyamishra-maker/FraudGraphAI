@@ -1,0 +1,6 @@
+CREATE QUERY investigate_customer(STRING cid) FOR GRAPH FraudGraph {
+  Start={Customer.*};
+  Start=SELECT s FROM Start:s WHERE s.customer_id==cid;
+  Tx=SELECT t FROM Start:s -(MADE:e)-> Transaction:t;
+  PRINT Tx;
+}
