@@ -1,0 +1,86 @@
+{
+  "case_id": "HHG-009",
+  "case": {
+    "status": "closed_fraud",
+    "verdict": "fraud",
+    "fraud_probability": 0.88,
+    "pattern": "card_not_present_fraud",
+    "pattern_description": "",
+    "affected_txn_ids": [
+      "3581141"
+    ],
+    "first_suspicious_txn_id": "3581141",
+    "connected_card_ids": [],
+    "connected_device_profiles": [],
+    "exposure_usd": 30.02,
+    "evidence": [
+      {
+        "claim": "Flagged transaction 3581141: customer C08299, amount $30.02; risk score is treated as an input, not a verdict.",
+        "source": "graph",
+        "ref": "query:flagged_transaction",
+        "entity_ids": [
+          "3581141",
+          "C08299"
+        ]
+      },
+      {
+        "claim": "Customer denies the online purchase; it is inconsistent with the customer's recent online billing-region history.",
+        "source": "graph",
+        "ref": "query:investigation_evidence",
+        "entity_ids": [
+          "3581141"
+        ]
+      },
+      {
+        "claim": "Prior closed cases were retrieved as case memory where available.",
+        "source": "graph",
+        "ref": "query:similar_closed_cases",
+        "entity_ids": []
+      }
+    ],
+    "similar_prior_cases": [],
+    "summary": "Customer denies the online purchase; it is inconsistent with the customer's recent online billing-region history. Assessed fraud probability: 0.88. Exposure identified: $30.02.",
+    "written_to_graph": false,
+    "graph_case_id": ""
+  },
+  "evidence_requests": [],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: strong fraud/customer-denial evidence."
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2: fraud investigation requires a case."
+      }
+    ],
+    "final": [
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: strong fraud/customer-denial evidence."
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2: fraud investigation requires a case."
+      }
+    ],
+    "what_changed": "nothing"
+  },
+  "sar": {
+    "file": false,
+    "reason": "No FILE_REPORT condition is met under the policy.",
+    "narrative": "",
+    "subjects": [],
+    "total_amount_usd": 0,
+    "activity_dates": []
+  },
+  "stop_reason": "Policy threshold reached and further investigation is not expected to change the action.",
+  "tool_calls": 8,
+  "tokens": 0,
+  "latency_s": 0
+}
