@@ -1,0 +1,14 @@
+CREATE VERTEX Customer(PRIMARY_ID customer_id STRING, risk_score FLOAT);
+CREATE VERTEX Card(PRIMARY_ID card_id STRING);
+CREATE VERTEX Transaction(PRIMARY_ID transaction_id STRING, ts DATETIME, amount FLOAT, channel STRING, risk_score FLOAT);
+CREATE VERTEX Device(PRIMARY_ID device_id STRING, profile STRING, is_proxy BOOL);
+CREATE VERTEX Region(PRIMARY_ID region_id STRING);
+CREATE VERTEX Case(PRIMARY_ID case_id STRING, status STRING, verdict STRING, fraud_probability FLOAT, pattern STRING, exposure FLOAT);
+CREATE VERTEX Evidence(PRIMARY_ID evidence_id STRING, source STRING, claim STRING);
+CREATE VERTEX ClosedCase(PRIMARY_ID closed_case_id STRING, verdict STRING, pattern STRING, outcome STRING);
+CREATE DIRECTED EDGE MADE(FROM Customer, TO Transaction);
+CREATE DIRECTED EDGE USED_DEVICE(FROM Transaction, TO Device);
+CREATE DIRECTED EDGE IN_REGION(FROM Transaction, TO Region);
+CREATE DIRECTED EDGE TRIGGERED(FROM Transaction, TO Case);
+CREATE DIRECTED EDGE SUPPORTED_BY(FROM Case, TO Evidence);
+CREATE DIRECTED EDGE SIMILAR_TO(FROM Case, TO ClosedCase);
