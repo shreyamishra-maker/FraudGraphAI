@@ -1,0 +1,128 @@
+{
+  "case_id": "HHG-006",
+  "case": {
+    "status": "closed_fraud",
+    "verdict": "fraud",
+    "fraud_probability": 0.96,
+    "pattern": "undocumented",
+    "pattern_description": "Activity is suspicious but does not cleanly fit the five documented fraud typologies.",
+    "affected_txn_ids": [
+      "3476602",
+      "3476633",
+      "3476665",
+      "3476682"
+    ],
+    "first_suspicious_txn_id": "3476602",
+    "connected_card_ids": [],
+    "connected_device_profiles": [],
+    "exposure_usd": 1906.07,
+    "evidence": [
+      {
+        "claim": "Flagged transaction 3476682: customer C07297, amount $1906.07; risk score is treated as an input, not a verdict.",
+        "source": "graph",
+        "ref": "query:flagged_transaction",
+        "entity_ids": [
+          "3476682",
+          "C07297"
+        ]
+      },
+      {
+        "claim": "Four large online purchases in 30 minutes total $1,906.07; the same Windows/IE device profile appears across multiple customers.",
+        "source": "graph",
+        "ref": "query:investigation_evidence",
+        "entity_ids": [
+          "3476602",
+          "3476633",
+          "3476665",
+          "3476682"
+        ]
+      },
+      {
+        "claim": "Prior closed cases were retrieved as case memory where available.",
+        "source": "graph",
+        "ref": "query:similar_closed_cases",
+        "entity_ids": []
+      }
+    ],
+    "similar_prior_cases": [],
+    "summary": "Four large online purchases in 30 minutes total $1,906.07; the same Windows/IE device profile appears across multiple customers. Assessed fraud probability: 0.96. Exposure identified: $1906.07.",
+    "written_to_graph": false,
+    "graph_case_id": ""
+  },
+  "evidence_requests": [],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: strong fraud/customer-denial evidence."
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2: fraud investigation requires a case."
+      },
+      {
+        "action": "FILE_REPORT",
+        "route": "L2",
+        "reason": "R6: shared-origin condition."
+      },
+      {
+        "action": "MONITOR_CONNECTED_CARDS",
+        "route": "auto",
+        "reason": "R6: connected cards require monitoring."
+      },
+      {
+        "action": "ESCALATE_TO_ANALYST",
+        "route": "auto",
+        "reason": "R9: undocumented activity requires analyst escalation."
+      }
+    ],
+    "final": [
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: strong fraud/customer-denial evidence."
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2: fraud investigation requires a case."
+      },
+      {
+        "action": "FILE_REPORT",
+        "route": "L2",
+        "reason": "R6: shared-origin condition."
+      },
+      {
+        "action": "MONITOR_CONNECTED_CARDS",
+        "route": "auto",
+        "reason": "R6: connected cards require monitoring."
+      },
+      {
+        "action": "ESCALATE_TO_ANALYST",
+        "route": "auto",
+        "reason": "R9: undocumented activity requires analyst escalation."
+      }
+    ],
+    "what_changed": "nothing"
+  },
+  "sar": {
+    "file": true,
+    "reason": "R2/R6",
+    "narrative": "Customer C07297, card C07297-K1, was investigated after 3476682. The suspicious activity covers 4 transaction(s) totaling $1906.07. The bank reviewed transaction history, identity/device signals and prior case memory. The activity was assessed as undocumented. The activity meets the applicable reporting condition under R2/R6. Underlying graph evidence is retained with the case.",
+    "subjects": [
+      "C07297",
+      "C07297-K1"
+    ],
+    "total_amount_usd": 1906.07,
+    "activity_dates": [
+      "2016-11-01",
+      "2016-12-31"
+    ]
+  },
+  "stop_reason": "Policy threshold reached and further investigation is not expected to change the action.",
+  "tool_calls": 8,
+  "tokens": 0,
+  "latency_s": 0
+}
