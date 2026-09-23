@@ -1,0 +1,92 @@
+{
+  "case_id": "HHG-005",
+  "case": {
+    "status": "open",
+    "verdict": "uncertain",
+    "fraud_probability": 0.66,
+    "pattern": "card_not_present_new_device",
+    "pattern_description": "",
+    "affected_txn_ids": [
+      "3523199"
+    ],
+    "first_suspicious_txn_id": "3523199",
+    "connected_card_ids": [],
+    "connected_device_profiles": [],
+    "exposure_usd": 100.07,
+    "evidence": [
+      {
+        "claim": "Flagged transaction 3523199: customer C02923, amount $100.07; risk score is treated as an input, not a verdict.",
+        "source": "graph",
+        "ref": "query:flagged_transaction",
+        "entity_ids": [
+          "3523199",
+          "C02923"
+        ]
+      },
+      {
+        "claim": "One $100.07 online purchase from a new iOS device is suspicious but there is no corroborating burst or customer response.",
+        "source": "graph",
+        "ref": "query:investigation_evidence",
+        "entity_ids": [
+          "3523199"
+        ]
+      },
+      {
+        "claim": "Prior closed cases were retrieved as case memory where available.",
+        "source": "graph",
+        "ref": "query:similar_closed_cases",
+        "entity_ids": []
+      }
+    ],
+    "similar_prior_cases": [],
+    "summary": "One $100.07 online purchase from a new iOS device is suspicious but there is no corroborating burst or customer response. Assessed fraud probability: 0.66. Exposure identified: $100.07.",
+    "written_to_graph": false,
+    "graph_case_id": ""
+  },
+  "evidence_requests": [
+    {
+      "type": "customer_validation",
+      "asked_after_step": 3,
+      "assumed_response": "No response was provided by the challenge; the case remains evidence-pending."
+    }
+  ],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "VERIFY_WITH_CUSTOMER",
+        "route": "auto",
+        "reason": "R1: fraud probability is below 0.70 and evidence is ambiguous."
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "Case is opened because evidence is requested."
+      }
+    ],
+    "final": [
+      {
+        "action": "VERIFY_WITH_CUSTOMER",
+        "route": "auto",
+        "reason": "R1: fraud probability is below 0.70 and evidence is ambiguous."
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "Case is opened because evidence is requested."
+      }
+    ],
+    "what_changed": "nothing"
+  },
+  "sar": {
+    "file": false,
+    "reason": "No FILE_REPORT condition is met under the policy.",
+    "narrative": "",
+    "subjects": [],
+    "total_amount_usd": 0,
+    "activity_dates": []
+  },
+  "stop_reason": "Evidence remains insufficient; verification/analyst review is required.",
+  "tool_calls": 8,
+  "tokens": 0,
+  "latency_s": 0
+}
