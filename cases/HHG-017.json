@@ -1,0 +1,96 @@
+{
+  "case_id": "HHG-017",
+  "case": {
+    "status": "open",
+    "verdict": "uncertain",
+    "fraud_probability": 0.6,
+    "pattern": "card_not_present_fraud",
+    "pattern_description": "",
+    "affected_txn_ids": [
+      "3450436",
+      "3450503",
+      "3450629"
+    ],
+    "first_suspicious_txn_id": "3450436",
+    "connected_card_ids": [],
+    "connected_device_profiles": [],
+    "exposure_usd": 300.14,
+    "evidence": [
+      {
+        "claim": "Flagged transaction 3450629: customer C04570, amount $300.14; risk score is treated as an input, not a verdict.",
+        "source": "graph",
+        "ref": "query:flagged_transaction",
+        "entity_ids": [
+          "3450629",
+          "C04570"
+        ]
+      },
+      {
+        "claim": "Three same-amount online purchases occur on a known device; the flagged risk is only 0.57 and the device is marked Found, so the evidence is ambiguous.",
+        "source": "graph",
+        "ref": "query:investigation_evidence",
+        "entity_ids": [
+          "3450436",
+          "3450503",
+          "3450629"
+        ]
+      },
+      {
+        "claim": "Prior closed cases were retrieved as case memory where available.",
+        "source": "graph",
+        "ref": "query:similar_closed_cases",
+        "entity_ids": []
+      }
+    ],
+    "similar_prior_cases": [],
+    "summary": "Three same-amount online purchases occur on a known device; the flagged risk is only 0.57 and the device is marked Found, so the evidence is ambiguous. Assessed fraud probability: 0.60. Exposure identified: $300.14.",
+    "written_to_graph": false,
+    "graph_case_id": ""
+  },
+  "evidence_requests": [
+    {
+      "type": "customer_validation",
+      "asked_after_step": 3,
+      "assumed_response": "No response was provided by the challenge; the case remains evidence-pending."
+    }
+  ],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "VERIFY_WITH_CUSTOMER",
+        "route": "auto",
+        "reason": "R1: fraud probability is below 0.70 and evidence is ambiguous."
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "Case is opened because evidence is requested."
+      }
+    ],
+    "final": [
+      {
+        "action": "VERIFY_WITH_CUSTOMER",
+        "route": "auto",
+        "reason": "R1: fraud probability is below 0.70 and evidence is ambiguous."
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "Case is opened because evidence is requested."
+      }
+    ],
+    "what_changed": "nothing"
+  },
+  "sar": {
+    "file": false,
+    "reason": "No FILE_REPORT condition is met under the policy.",
+    "narrative": "",
+    "subjects": [],
+    "total_amount_usd": 0,
+    "activity_dates": []
+  },
+  "stop_reason": "Evidence remains insufficient; verification/analyst review is required.",
+  "tool_calls": 8,
+  "tokens": 0,
+  "latency_s": 0
+}
