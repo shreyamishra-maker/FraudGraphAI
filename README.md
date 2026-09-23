@@ -2,9 +2,28 @@
 
 Agentic Fraud Investigation & Next-Best Action for the TigerGraph HHGOA challenge.
 
-## Quick start
+## What is included
+- Dataset-grounded investigation design
+- Deterministic Fraud Policy R1–R10 boundary
+- TigerGraph schema and investigation queries
+- TigerGraph MCP configuration boundary
+- GraphRAG retrieval boundary
+- Analyst dashboard (Vite/React)
+- 20 benchmark JSON answer records under `cases/`
+- Vercel + Render deployment configuration
 
-### Backend
+## Dataset
+The HHGOA_IEEE dataset is **not committed to GitHub** because `transactions.csv` is about 708 MB and contains the challenge data. Put the supplied files in a local/private data directory and run the dataset-backed investigation pipeline.
+
+Expected files:
+- `transactions.csv`
+- `identity.csv`
+- `closed_cases_history.csv`
+- `case_pack.csv`
+
+Read the supplied README before loading the data.
+
+## Quick start
 ```bash
 cd backend
 python -m venv .venv
@@ -14,21 +33,20 @@ pip install -r requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-### Frontend
+Frontend:
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Backend: http://localhost:8000  
-Frontend: http://localhost:5173
+## Production architecture
+Trigger → Case → TigerGraph/MCP → GraphRAG → Pattern assessment → uncertainty gate → evidence request → policy engine → next-best action → explanation → case memory.
 
-## Environment
-Copy `.env.example` to `.env`. Never commit credentials, tokens, or private datasets.
+The LLM should synthesize retrieved evidence and select tools; graph traversal and fraud-pattern analysis remain graph/query responsibilities.
 
-## TigerGraph
-See `tigergraph/schema.gsql`, `tigergraph/loading.gsql`, and `tigergraph/queries.gsql`.
+## Important benchmark status
+The 20 JSON files are **dataset-grounded candidate outputs**. They currently set `written_to_graph=false` because no TigerGraph instance was connected during generation. After connecting TigerGraph/MCP, rerun the cases and update each record with the real graph case ID and write status.
 
-## Submission
-The challenge requires a working agent, GitHub repository, 20 case outputs, graph-written cases, SAR where required, initial/final next-best action, demo video, technical blog, and a social post tagging TigerGraph.
+## Secrets
+Never commit `.env`, TigerGraph credentials, API keys, or private dataset files.
