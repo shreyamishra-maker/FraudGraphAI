@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.next/
+dist/
+build/
+outputs/
+data/full/
+*.csv
+*.parquet
+*.xlsx
+.DS_Store
