@@ -1,0 +1,8 @@
+USE GRAPH FraudGraph
+CREATE QUERY similar_closed_cases(STRING cid) FOR GRAPH FraudGraph {
+  C={ClosedCase.*}; C=SELECT c FROM C:c WHERE c.customer_id==cid; PRINT C;
+}
+CREATE QUERY device_neighbors(STRING did) FOR GRAPH FraudGraph {
+  D={DeviceProfile.*}; D=SELECT d FROM D:d WHERE d.device_id==did;
+  T=SELECT t FROM D:d <-(FROM_DEVICE:e)- Transaction:t; PRINT T;
+}
