@@ -1,0 +1,112 @@
+{
+  "case_id": "HHG-010",
+  "case": {
+    "status": "closed_fraud",
+    "verdict": "fraud",
+    "fraud_probability": 0.96,
+    "pattern": "card_not_present_new_device",
+    "pattern_description": "",
+    "affected_txn_ids": [
+      "3506725"
+    ],
+    "first_suspicious_txn_id": "3506725",
+    "connected_card_ids": [],
+    "connected_device_profiles": [],
+    "exposure_usd": 1000.03,
+    "evidence": [
+      {
+        "claim": "Flagged transaction 3506725: customer C10434, amount $1000.03; risk score is treated as an input, not a verdict.",
+        "source": "graph",
+        "ref": "query:flagged_transaction",
+        "entity_ids": [
+          "3506725",
+          "C10434"
+        ]
+      },
+      {
+        "claim": "$1,000.03 online transaction, risk 0.90, new device, and the same device profile is shared by multiple customer cards.",
+        "source": "graph",
+        "ref": "query:investigation_evidence",
+        "entity_ids": [
+          "3506725"
+        ]
+      },
+      {
+        "claim": "Prior closed cases were retrieved as case memory where available.",
+        "source": "graph",
+        "ref": "query:similar_closed_cases",
+        "entity_ids": []
+      }
+    ],
+    "similar_prior_cases": [],
+    "summary": "$1,000.03 online transaction, risk 0.90, new device, and the same device profile is shared by multiple customer cards. Assessed fraud probability: 0.96. Exposure identified: $1000.03.",
+    "written_to_graph": false,
+    "graph_case_id": ""
+  },
+  "evidence_requests": [],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: strong fraud/customer-denial evidence."
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2: fraud investigation requires a case."
+      },
+      {
+        "action": "FILE_REPORT",
+        "route": "L2",
+        "reason": "R6: shared-origin condition."
+      },
+      {
+        "action": "MONITOR_CONNECTED_CARDS",
+        "route": "auto",
+        "reason": "R6: connected cards require monitoring."
+      }
+    ],
+    "final": [
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: strong fraud/customer-denial evidence."
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2: fraud investigation requires a case."
+      },
+      {
+        "action": "FILE_REPORT",
+        "route": "L2",
+        "reason": "R6: shared-origin condition."
+      },
+      {
+        "action": "MONITOR_CONNECTED_CARDS",
+        "route": "auto",
+        "reason": "R6: connected cards require monitoring."
+      }
+    ],
+    "what_changed": "nothing"
+  },
+  "sar": {
+    "file": true,
+    "reason": "R2/R6",
+    "narrative": "Customer C10434, card C10434-K1, was investigated after 3506725. The suspicious activity covers 1 transaction(s) totaling $1000.03. The bank reviewed transaction history, identity/device signals and prior case memory. The activity was assessed as card_not_present_new_device. The activity meets the applicable reporting condition under R2/R6. Underlying graph evidence is retained with the case.",
+    "subjects": [
+      "C10434",
+      "C10434-K1"
+    ],
+    "total_amount_usd": 1000.03,
+    "activity_dates": [
+      "2016-11-01",
+      "2016-12-31"
+    ]
+  },
+  "stop_reason": "Policy threshold reached and further investigation is not expected to change the action.",
+  "tool_calls": 8,
+  "tokens": 0,
+  "latency_s": 0
+}
