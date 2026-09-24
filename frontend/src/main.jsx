@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {createRoot} from "react-dom/client";
 import "./style.css";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API = import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || "https://fraudgraphai-m72y.onrender.com";
 
 function App(){
   const [caseId,setCaseId]=useState("HHG-001");
