@@ -10,10 +10,10 @@
     "first_suspicious_txn_id": "",
     "connected_card_ids": [],
     "connected_device_profiles": [],
-    "exposure_usd": 0,
+    "exposure_usd": 77.07,
     "evidence": [
       {
-        "claim": "Flagged transaction 3514030: customer C12382, amount $0.00; risk score is treated as an input, not a verdict.",
+        "claim": "Flagged transaction 3514030: customer C12382, amount $77.07; risk score is treated as an input, not a verdict.",
         "source": "graph",
         "ref": "query:flagged_transaction",
         "entity_ids": [
@@ -35,7 +35,7 @@
       }
     ],
     "similar_prior_cases": [],
-    "summary": "C12382 had prior use of billing region 444 and extensive in-person history; the 0.61 risk score is not treated as a verdict. Assessed fraud probability: 0.08. Exposure identified: $0.00.",
+    "summary": "C12382 had prior use of billing region 444 and extensive in-person history; the 0.61 risk score is not treated as a verdict. Assessed fraud probability: 0.08. Exposure identified: $77.07.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -62,7 +62,7 @@
     "reason": "No FILE_REPORT condition is met under the policy.",
     "narrative": "",
     "subjects": [],
-    "total_amount_usd": 0,
+    "total_amount_usd": 77.07,
     "activity_dates": []
   },
   "stop_reason": "Policy threshold reached and further investigation is not expected to change the action.",
