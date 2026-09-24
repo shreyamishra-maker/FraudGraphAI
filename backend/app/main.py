@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 tg = TigerGraphMCPClient()
-CASES_DIR = Path(__file__).resolve().parents[2] / "cases"
+CASES_DIR = Path(__file__).resolve().parents[1] / "cases"
 
 
 class InvestigationRequest(BaseModel):
