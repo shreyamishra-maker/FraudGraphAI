@@ -33,13 +33,13 @@ CASES_DIR = next(
 
 
 class InvestigationRequest(BaseModel):
-    case_id: str = Field(min_length=7, max_length=7, pattern=r"^HHG-\\d{3}$")
+    case_id: str = Field(min_length=7, max_length=7, pattern=r"^HHG-\d{3}$")
     trigger: str = Field(default="analyst", min_length=1, max_length=80)
 
 
 def load_case(case_id: str):
     normalized_id = case_id.strip().upper()
-    if not re.fullmatch(r"HHG-\\d{3}", normalized_id):
+    if not re.fullmatch(r"HHG-\d{3}", normalized_id):
         raise HTTPException(status_code=400, detail="Invalid case ID. Use HHG-001 to HHG-020.")
 
     path = CASES_DIR / f"{normalized_id}.json"
