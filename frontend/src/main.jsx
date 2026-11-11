@@ -6,7 +6,7 @@ const API = (
   import.meta.env.VITE_API_URL ||
   import.meta.env.VITE_BACKEND_URL ||
   "https://fraudgraphai-m72y.onrender.com"
-).replace(/\\/+$/, "");
+).replace(/\/+$/, "");
 
 function App() {
   const [caseId, setCaseId] = useState("HHG-001");
@@ -15,7 +15,7 @@ function App() {
 
   async function investigate() {
     const normalizedCaseId = caseId.trim().toUpperCase();
-    if (!/^HHG-\\d{3}$/.test(normalizedCaseId)) {
+    if (!/^HHG-\d{3}$/.test(normalizedCaseId)) {
       setResult({ error: "Enter a valid case ID, for example HHG-001." });
       return;
     }
