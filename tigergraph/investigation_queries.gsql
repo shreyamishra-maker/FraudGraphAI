@@ -1,8 +1,24 @@
-USE GRAPH FraudGraph
-CREATE QUERY similar_closed_cases(STRING cid) FOR GRAPH FraudGraph {
-  C={ClosedCase.*}; C=SELECT c FROM C:c WHERE c.customer_id==cid; PRINT C;
+USE GRAPH Transaction_Fraud
+
+CREATE QUERY get_transaction_details(STRING txn_id) FOR GRAPH Transaction_Fraud {
+  T = {Payment_Transaction.*};
+  T = SELECT t FROM T:t
+      WHERE t.id == txn_id;
+  PRINT T;
 }
-CREATE QUERY device_neighbors(STRING did) FOR GRAPH FraudGraph {
-  D={DeviceProfile.*}; D=SELECT d FROM D:d WHERE d.device_id==did;
-  T=SELECT t FROM D:d <-(FROM_DEVICE:e)- Transaction:t; PRINT T;
+
+CREATE QUERY get_transaction_cards(STRING txn_id) FOR GRAPH Transaction_Fraud {
+  T = {Payment_Transaction.*};
+  T = SELECT t FROM T:t
+      WHERE t.id == txn_id;
+  C = SELECT c FROM T:t -(Card_Send_Transaction:e)- Card:c;
+  PRINT C;
+}
+
+CREATE QUERY get_transaction_merchants(STRING txn_id) FOR GRAPH Transaction_Fraud {
+  T = {Payment_Transaction.*};
+  T = SELECT t FROM T:t
+      WHERE t.id == txn_id;
+  M = SELECT m FROM T:t -(Merchant_Receive_Transaction:e)- Merchant:m;
+  PRINT M;
 }
