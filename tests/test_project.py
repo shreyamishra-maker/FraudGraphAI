@@ -5,7 +5,7 @@ from pathlib import Path
 from backend.app.policy import allowed, route
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class PolicyRoutingTests(unittest.TestCase):
