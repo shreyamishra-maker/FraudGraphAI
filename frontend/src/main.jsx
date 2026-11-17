@@ -104,6 +104,9 @@ function App() {
                 <div key={`${action.action || "action"}-${index}`}>
                   <b>{action.action || "Review required"}</b>
                   <span>Approval: {action.approval || action.route || "L2"}</span>
+                  {action.supported === false && (
+                    <p className="error">Unsupported action: manual review required. This prototype does not execute actions.</p>
+                  )}
                   <p>{action.reason || ""}</p>
                 </div>
               ))}
