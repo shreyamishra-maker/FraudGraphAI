@@ -107,6 +107,7 @@ async def investigate(req: InvestigationRequest):
             decision = allowed(action, exposure)
             prepared.append({
                 **item,
+                "supported": decision.get("supported", False),
                 "approval": decision.get("route", item.get("route", "L2")),
             })
         return prepared
