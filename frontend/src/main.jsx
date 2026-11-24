@@ -48,9 +48,9 @@ function App() {
   return (
     <main>
       <section className="hero">
-        <div className="badge">TigerGraph HHGOA • Agentic Investigation</div>
+        <div className="badge">TigerGraph HHGOA • Benchmark Demo</div>
         <h1>FraudGraph AI</h1>
-        <p>Graph-grounded investigation, uncertainty assessment and next-best action.</p>
+        <p>Evidence review, uncertainty assessment and approval routing for benchmark cases.</p>
       </section>
 
       <section className="card">
@@ -68,12 +68,15 @@ function App() {
             autoComplete="off"
           />
           <button onClick={investigate} disabled={loading || !caseId.trim()}>
-            {loading ? "Investigating…" : "Investigate"}
+            {loading ? "Loading case…" : "View investigation"}
           </button>
         </div>
 
         {result && !result.error && (
           <div className="result">
+            <div className="notice" role="note">
+              Benchmark artifact replay. This demo does not run a live graph query or execute financial actions.
+            </div>
             <div className="grid">
               <div><span>Case</span><strong>{result.case_id}</strong></div>
               <div><span>Status</span><strong>{result.case_status || "—"}</strong></div>
@@ -81,14 +84,14 @@ function App() {
               <div><span>Fraud probability</span><strong>{result.fraud_probability ?? "—"}</strong></div>
             </div>
 
-            <h3>Investigation workflow</h3>
+            <h3>Recorded workflow</h3>
             <div className="steps">
               {(result.workflow || []).map((step, index) => (
                 <span key={step}>{index + 1}. {step.replaceAll("_", " ")}</span>
               ))}
             </div>
 
-            <h3>Evidence</h3>
+            <h3>Evidence in benchmark artifact</h3>
             <div className="evidence">
               {(result.evidence || []).map((item, index) => (
                 <div className="item" key={item.ref || index}>
@@ -116,8 +119,7 @@ function App() {
             <p className="muted">
               {result.case_memory?.written_to_graph
                 ? "Written to graph"
-                : "Graph write pending MCP authentication"}
-              .
+                : "Not written to TigerGraph (MCP authentication not verified)"}.
             </p>
 
             <details>
