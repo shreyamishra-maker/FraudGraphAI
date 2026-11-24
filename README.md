@@ -21,7 +21,7 @@ Please keep these distinctions explicit in demos and submissions.
 - `tigergraph/`: current graph investigation query draft and MCP environment example
 - `Dockerfile`: repository-root Docker build
 - `render.yaml`: Render Docker Blueprint configuration
-- `vercel.json`: Vite static frontend configuration
+- `frontend/vercel.json`: Vercel configuration when the project root is set to `frontend`
 
 The HHGOA dataset is not included. The transaction CSV is large and should only be stored locally or in an approved private data location. Read the dataset's supplied README before importing it.
 
@@ -69,8 +69,8 @@ npm run build
 Example:
 
 ```bash
-curl -X POST http://127.0.0.1:8000/investigate \
-  -H "Content-Type: application/json" \
+curl -X POST http://127.0.0.1:8000/investigate \\
+  -H "Content-Type: application/json" \\
   -d '{"case_id":"HHG-001","trigger":"analyst"}'
 ```
 
@@ -84,7 +84,7 @@ The repository Blueprint uses the root `Dockerfile` and root build context. The 
 
 ### Vercel frontend
 
-Set the Vercel project root directory to `frontend`. Set the environment variable `VITE_API_URL` to the deployed backend base URL (without a trailing slash). The Vite build output is `dist`.
+Set the Vercel project root directory to `frontend`. The Vercel configuration is stored in `frontend/vercel.json`. Set the environment variable `VITE_API_URL` to the deployed backend base URL (without a trailing slash). The Vite build output is `dist`.
 
 ## TigerGraph and GraphRAG
 
