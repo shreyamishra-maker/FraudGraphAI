@@ -101,7 +101,22 @@ function App() {
               ))}
             </div>
 
+            {(result.evidence_requests || []).length > 0 && (
+              <>
+                <h3>Pending evidence requests</h3>
+                <div className="evidence">
+                  {result.evidence_requests.map((request, index) => (
+                    <div className="item" key={`${request.type || "request"}-${index}`}>
+                      <b>{(request.type || "evidence").replaceAll("_", " ")}</b>
+                      <p>{request.assumed_response || "Awaiting evidence."}</p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
             <h3>Next-best action</h3>
+            <p className="muted">Final recommendations with approval routes. No action is executed by this demo.</p>
             <div className="action">
               {((result.next_best_action || {}).final || []).map((action, index) => (
                 <div key={`${action.action || "action"}-${index}`}>
@@ -113,6 +128,14 @@ function App() {
                   <p>{action.reason || ""}</p>
                 </div>
               ))}
+            </div>
+
+            <h3>SAR assessment</h3>
+            <div className="item">
+              <b>{result.sar?.file ? "SAR recommended" : "No SAR recommended in benchmark artifact"}</b>
+              <p>{result.sar?.reason || "No SAR rationale supplied."}</p>
+              {result.sar?.narrative && <p>{result.sar.narrative}</p>}
+              <span>Reported amount: ${Number(result.sar?.total_amount_usd || 0).toFixed(2)} USD</span>
             </div>
 
             <h3>Case memory</h3>
