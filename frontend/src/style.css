@@ -16,6 +16,7 @@ button{flex:0 0 auto;min-height:46px;padding:12px 20px;border:0;border-radius:11
 button:hover:not(:disabled){filter:brightness(.94);transform:translateY(-1px)}
 button:disabled{opacity:.55;cursor:not-allowed}
 .result{margin-top:28px}
+.notice{margin:0 0 16px;padding:12px 14px;border:1px solid #e8d6b9;border-radius:11px;background:#f7efe2;color:#72543b;font-size:13px;line-height:1.5}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .grid>div,.item,.action>div{min-width:0;padding:15px;border:1px solid #eee7de;border-radius:13px;background:#faf7f2}
 .grid span{display:block;margin-bottom:7px;color:#78685d;font-size:12px}
