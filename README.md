@@ -84,7 +84,7 @@ The repository Blueprint uses the root `Dockerfile` and root build context. The 
 
 ### Vercel frontend
 
-Set the Vercel project root directory to `frontend`. The Vercel configuration is stored in `frontend/vercel.json`. Set the environment variable `VITE_API_URL` to the deployed backend base URL (without a trailing slash). The Vite build output is `dist`.
+Set the Vercel project root directory to `frontend`. The Vercel configuration is stored in `frontend/vercel.json`. Set the environment variable `VITE_API_URL` to the deployed backend base URL (without a trailing slash). On Render, set `CORS_ORIGINS` to a comma-separated list containing the exact deployed Vercel origin. The Vite build output is `dist`.
 
 ## TigerGraph and GraphRAG
 
@@ -94,13 +94,13 @@ The current TigerGraph query file is a draft for the observed `Transaction_Fraud
 
 ## Policy routing
 
-The policy module only returns approval routes; it does not execute actions. Analyst escalation and report filing route to L2, transaction decline routes to L1, and card blocking routes to L1 or L2 based on exposure. Confirm all thresholds and action permissions against the challenge's supplied bank policy before production use.
+The policy module only returns approval routes; it does not execute actions. Low-impact monitoring/verification actions may be labelled auto. Transaction declines, card blocks, report filing and analyst escalation route to L2 as conservative prototype defaults. Confirm every action permission and approval level against the challenge's supplied bank policy before production use.
 
 ## Security and limitations
 
 - This is a demonstration prototype, not a production fraud-control system.
 - The API currently has no authentication or role-based authorization.
-- CORS is permissive for demo use; restrict allowed origins before production.
+- CORS uses a configurable origin allow-list via `CORS_ORIGINS`; set it to the exact deployed frontend origin.
 - No real financial action is executed by this API.
 - A benchmark artifact must not be described as a live TigerGraph or LLM investigation.
 - Do not expose private case data or credentials in public logs or screenshots.
