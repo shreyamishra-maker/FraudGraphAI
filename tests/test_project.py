@@ -69,6 +69,11 @@ class ApiSmokeTests(unittest.TestCase):
         block = next(item for item in final_actions if item["action"] == "BLOCK_CARD")
         self.assertEqual(block["approval"], "L2")
 
+    def test_cors_uses_an_origin_allow_list(self):
+        origins = app.user_middleware[0].kwargs.get("allow_origins", [])
+        self.assertTrue(origins)
+        self.assertNotIn("*", origins)
+
     def test_tigergraph_status_does_not_expose_host_or_token(self):
         response = client.get("/tg-status")
         self.assertEqual(response.status_code, 200)
