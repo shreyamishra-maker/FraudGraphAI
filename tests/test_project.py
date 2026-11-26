@@ -13,18 +13,19 @@ client = TestClient(app)
 
 
 class PolicyRoutingTests(unittest.TestCase):
-    def test_escalation_requires_analyst_route(self):
-        self.assertEqual(route("ESCALATE_TO_ANALYST"), "L2")
+    def test_low_impact_actions_can_be_auto_routed(self):
+        self.assertEqual(route("MONITOR_CARD"), "auto")
+        self.assertEqual(route("CLOSE_NO_FRAUD"), "auto")
 
-    def test_report_requires_analyst_route(self):
-        self.assertEqual(route("FILE_REPORT"), "L2")
-
-    def test_decline_requires_l1(self):
-        self.assertEqual(route("DECLINE_TRANSACTION"), "L1")
-
-    def test_card_block_route_uses_exposure(self):
-        self.assertEqual(route("BLOCK_CARD", 2500), "L1")
-        self.assertEqual(route("BLOCK_CARD", 2500.01), "L2")
+    def test_high_impact_actions_require_l2(self):
+        for action in (
+            "DECLINE_TRANSACTION",
+            "BLOCK_CARD",
+            "FILE_REPORT",
+            "ESCALATE_TO_ANALYST",
+        ):
+            with self.subTest(action=action):
+                self.assertEqual(route(action), "L2")
 
     def test_unknown_action_is_not_marked_supported(self):
         result = allowed("RUN_ARBITRARY_ACTION")
@@ -38,6 +39,7 @@ class ApiSmokeTests(unittest.TestCase):
         response = client.get("/health")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["available_cases"], 20)
+        self.assertTrue(response.json()["case_store_ready"])
 
     def test_case_lookup(self):
         response = client.get("/case/HHG-001")
@@ -50,14 +52,33 @@ class ApiSmokeTests(unittest.TestCase):
     def test_missing_case_returns_404(self):
         self.assertEqual(client.get("/case/HHG-999").status_code, 404)
 
-    def test_investigation_returns_routes_and_artifact_notice(self):
-        response = client.post("/investigate", json={"case_id": "HHG-001"})
+    def test_invalid_case_id_is_rejected(self):
+        self.assertEqual(client.get("/case/../../etc/passwd").status_code, 404)
+        response = client.post("/investigate", json={"case_id": "not-a-case"})
+        self.assertEqual(response.status_code, 422)
+
+    def test_investigation_normalizes_case_id_and_routes_actions(self):
+        response = client.post("/investigate", json={"case_id": " hhg-003 "})
         self.assertEqual(response.status_code, 200)
         payload = response.json()
-        self.assertEqual(payload["case_id"], "HHG-001")
+        self.assertEqual(payload["case_id"], "HHG-003")
+        self.assertEqual(payload["mode"], "benchmark-artifact-replay")
         self.assertFalse(payload["case_memory"]["written_to_graph"])
-        self.assertIn("Benchmark-grounded", payload["demo_note"])
-        self.assertTrue(payload["next_best_action"]["final"])
+        self.assertIn("does not run live graph queries", payload["demo_note"])
+        final_actions = payload["next_best_action"]["final"]
+        block = next(item for item in final_actions if item["action"] == "BLOCK_CARD")
+        self.assertEqual(block["approval"], "L2")
+
+    def test_tigergraph_status_does_not_expose_host_or_token(self):
+        response = client.get("/tg-status")
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertNotIn("host", body["tigergraph"])
+        self.assertNotIn("token", body["tigergraph"])
+
+    def test_case_id_whitespace_is_normalized(self):
+        response = client.post("/investigate", json={"case_id": " HHG-001 "})
+        self.assertEqual(response.status_code, 200)
 
 
 class BenchmarkArtifactTests(unittest.TestCase):
@@ -71,6 +92,14 @@ class BenchmarkArtifactTests(unittest.TestCase):
                 self.assertEqual(data["case_id"], path.stem)
                 self.assertIsInstance(data["case"], dict)
                 self.assertIn("next_best_actions", data)
+                actions = data["next_best_actions"]
+                self.assertIsInstance(actions.get("initial"), list)
+                self.assertIsInstance(actions.get("final"), list)
+                self.assertIsInstance(data["case"].get("evidence"), list)
+                probability = data["case"].get("fraud_probability")
+                self.assertIsInstance(probability, (int, float))
+                self.assertGreaterEqual(probability, 0)
+                self.assertLessEqual(probability, 1)
 
 
 if __name__ == "__main__":
