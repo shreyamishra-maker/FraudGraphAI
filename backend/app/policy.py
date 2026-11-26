@@ -1,6 +1,8 @@
-"""Deterministic approval routing for supported investigation actions.
+"""Deterministic approval routing for benchmark recommendations.
 
-This module assigns an approval route; it does not execute financial actions.
+This module assigns an approval route only. It never executes an action.
+Routes are conservative defaults and must be reconciled with the challenge's
+supplied bank policy before any production use.
 """
 from typing import Any
 
@@ -25,25 +27,23 @@ SUPPORTED_ACTIONS = AUTO_APPROVED_ACTIONS | {
 
 
 def route(action: str, exposure: float = 0.0) -> str:
-    """Return the approval route for an action.
-
-    High-exposure card blocks require L2 review. Analyst escalation and
-    regulatory filing are never silently classified as auto-approved.
-    """
+    """Return a conservative approval route for a proposed action."""
     normalized = str(action or "").strip().upper()
-    try:
-        amount = max(0.0, float(exposure or 0.0))
-    except (TypeError, ValueError):
-        amount = 0.0
 
     if normalized in AUTO_APPROVED_ACTIONS:
         return "auto"
-    if normalized == "DECLINE_TRANSACTION":
-        return "L1"
-    if normalized == "BLOCK_CARD":
-        return "L1" if amount <= 2500 else "L2"
-    if normalized in {"FILE_REPORT", "ESCALATE_TO_ANALYST"}:
+
+    # Declines, card blocks, regulatory reports and analyst escalations can
+    # materially affect customers or require regulated review.
+    if normalized in {
+        "DECLINE_TRANSACTION",
+        "BLOCK_CARD",
+        "FILE_REPORT",
+        "ESCALATE_TO_ANALYST",
+    }:
         return "L2"
+
+    # Unknown actions must never be auto-approved.
     return "L2"
 
 
