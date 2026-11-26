@@ -7,6 +7,9 @@ import re
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from .mcp_client import TigerGraphMCPClient
 from .policy import allowed
