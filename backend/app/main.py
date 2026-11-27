@@ -145,7 +145,12 @@ def validate_case_artifact(data: Any, expected_id: str) -> dict[str, Any]:
     }
     status = case.get("status")
     verdict = case.get("verdict")
-    if status not in valid_status_verdict or valid_status_verdict[status] != verdict:
+    if (
+        not isinstance(status, str)
+        or not isinstance(verdict, str)
+        or status not in valid_status_verdict
+        or valid_status_verdict[status] != verdict
+    ):
         raise _invalid_artifact(expected_id, "status/verdict combination")
 
     _finite_number(
@@ -158,6 +163,11 @@ def validate_case_artifact(data: Any, expected_id: str) -> dict[str, Any]:
 
     if not isinstance(case.get("summary"), str):
         raise _invalid_artifact(expected_id, "summary")
+    for field_name in ("pattern", "pattern_description"):
+        if field_name in case and not isinstance(case[field_name], str):
+            raise _invalid_artifact(expected_id, field_name)
+    if not isinstance(case.get("similar_prior_cases", []), list):
+        raise _invalid_artifact(expected_id, "similar prior cases")
     evidence = case.get("evidence")
     if not isinstance(evidence, list):
         raise _invalid_artifact(expected_id, "evidence list")
@@ -189,6 +199,7 @@ def validate_case_artifact(data: Any, expected_id: str) -> dict[str, Any]:
                 not isinstance(item, dict)
                 or not isinstance(item.get("action"), str)
                 or not item["action"].strip()
+                or ("reason" in item and not isinstance(item["reason"], str))
             ):
                 raise _invalid_artifact(expected_id, f"{stage} action {index}")
     if not isinstance(actions.get("what_changed", ""), str):
@@ -197,8 +208,13 @@ def validate_case_artifact(data: Any, expected_id: str) -> dict[str, Any]:
     sar = data.get("sar")
     if not isinstance(sar, dict) or not isinstance(sar.get("file"), bool):
         raise _invalid_artifact(expected_id, "SAR assessment")
+    for field_name in ("reason", "narrative"):
+        if field_name in sar and not isinstance(sar[field_name], str):
+            raise _invalid_artifact(expected_id, f"SAR {field_name}")
     if "total_amount_usd" in sar:
         _finite_number(sar["total_amount_usd"], "SAR total amount", minimum=0)
+    if "stop_reason" in data and not isinstance(data["stop_reason"], str):
+        raise _invalid_artifact(expected_id, "stop reason")
 
     if not isinstance(case.get("written_to_graph"), bool):
         raise _invalid_artifact(expected_id, "graph-write flag")
