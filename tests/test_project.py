@@ -130,6 +130,18 @@ class BenchmarkArtifactTests(unittest.TestCase):
         with self.assertRaises(Exception):
             validate_case_artifact(data, "HHG-001")
 
+    def test_non_string_status_is_rejected_cleanly(self):
+        data = json.loads((ROOT / "cases" / "HHG-001.json").read_text(encoding="utf-8"))
+        data["case"]["status"] = []
+        with self.assertRaises(Exception):
+            validate_case_artifact(data, "HHG-001")
+
+    def test_boolean_probability_is_not_accepted_as_numeric(self):
+        data = json.loads((ROOT / "cases" / "HHG-001.json").read_text(encoding="utf-8"))
+        data["case"]["fraud_probability"] = True
+        with self.assertRaises(Exception):
+            validate_case_artifact(data, "HHG-001")
+
 
 if __name__ == "__main__":
     unittest.main()
