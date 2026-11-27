@@ -22,17 +22,24 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .grid span{display:block;margin-bottom:7px;color:#78685d;font-size:12px}
 .grid strong{display:block;overflow-wrap:anywhere;font-size:15px}
 h3{margin:26px 0 12px;font-size:17px;letter-spacing:-.01em}
+h4{margin:0 0 10px;color:#75452f;font-size:14px}
+.body-copy{color:#5e5047;font-size:14px;line-height:1.6;overflow-wrap:anywhere}
 .steps{display:flex;flex-wrap:wrap;gap:8px}
 .steps span{padding:8px 11px;border:1px solid #e8dac8;border-radius:999px;background:#f4eadc;font-size:12px;line-height:1.35}
 .evidence{display:grid;gap:10px}
 .item b,.action b{font-size:13px;color:#75452f}
 .item p,.action p{margin:7px 0 0;color:#5e5047;font-size:14px;line-height:1.55;overflow-wrap:anywhere}
+.item .muted{display:block;margin-top:8px}
 .action{display:grid;gap:10px}
-.action span{display:block;margin-top:6px;color:#806d5e;font-size:12px}
+.action-heading{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+.route{color:#806d5e;font-size:12px}
+.action-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.action-section{min-width:0}
 .muted{color:#806d5e;font-size:13px;line-height:1.5}
 .error{margin-top:20px;padding:14px;border:1px solid #f0c9c2;border-radius:11px;background:#fbe8e5;color:#8b3327;line-height:1.5;overflow-wrap:anywhere}
+.inline-error{margin-top:10px!important;padding:10px;border-radius:8px;background:#fbe8e5;color:#8b3327!important}
 details{margin-top:20px}
 summary{cursor:pointer;color:#75452f;font-size:14px;font-weight:700}
 pre{max-width:100%;margin-top:12px;padding:16px;border-radius:12px;background:#211a16;color:#f5eee6;overflow:auto;font-size:12px;line-height:1.5}
-@media(max-width:700px){main{padding-top:22px}.row{flex-direction:column}.row button{width:100%}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{border-radius:17px}}
-@media(max-width:360px){.grid{grid-template-columns:1fr}.steps span{font-size:11px}}
+@media(max-width:700px){main{padding-top:22px}.row{flex-direction:column}.row button{width:100%}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.action-columns{grid-template-columns:1fr}.card{border-radius:17px}}
+@media(max-width:360px){.grid{grid-template-columns:1fr}}
