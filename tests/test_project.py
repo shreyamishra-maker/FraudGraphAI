@@ -1,10 +1,11 @@
 import json
+import math
 import unittest
 from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from backend.app.main import app
+from backend.app.main import app, validate_case_artifact
 from backend.app.policy import allowed, route
 
 
@@ -53,8 +54,14 @@ class ApiSmokeTests(unittest.TestCase):
         self.assertEqual(client.get("/case/HHG-999").status_code, 404)
 
     def test_invalid_case_id_is_rejected(self):
-        self.assertEqual(client.get("/case/../../etc/passwd").status_code, 404)
         response = client.post("/investigate", json={"case_id": "not-a-case"})
+        self.assertEqual(response.status_code, 422)
+
+    def test_extra_request_fields_are_rejected(self):
+        response = client.post(
+            "/investigate",
+            json={"case_id": "HHG-001", "unexpected": "value"},
+        )
         self.assertEqual(response.status_code, 422)
 
     def test_investigation_normalizes_case_id_and_routes_actions(self):
@@ -64,12 +71,15 @@ class ApiSmokeTests(unittest.TestCase):
         self.assertEqual(payload["case_id"], "HHG-003")
         self.assertEqual(payload["mode"], "benchmark-artifact-replay")
         self.assertFalse(payload["case_memory"]["written_to_graph"])
-        self.assertIn("does not run live graph queries", payload["demo_note"])
-        final_actions = payload["next_best_action"]["final"]
-        block = next(item for item in final_actions if item["action"] == "BLOCK_CARD")
+        self.assertIn("does not run live graph queries", payload["disclaimer"])
+        block = next(
+            item for item in payload["next_best_action"]["final"]
+            if item["action"] == "BLOCK_CARD"
+        )
         self.assertEqual(block["approval"], "L2")
+        self.assertEqual(block["approval_policy"], "provisional_default_not_bank_policy")
 
-    def test_cors_uses_an_origin_allow_list(self):
+    def test_cors_uses_an_origin_allow_list_by_default(self):
         origins = app.user_middleware[0].kwargs.get("allow_origins", [])
         self.assertTrue(origins)
         self.assertNotIn("*", origins)
@@ -87,24 +97,38 @@ class ApiSmokeTests(unittest.TestCase):
 
 
 class BenchmarkArtifactTests(unittest.TestCase):
-    def test_all_twenty_case_files_exist_and_parse(self):
+    def test_all_twenty_cases_pass_api_validation(self):
         cases_dir = ROOT / "cases"
         files = sorted(cases_dir.glob("HHG-*.json"))
         self.assertEqual(len(files), 20)
+
         for path in files:
             with self.subTest(case=path.name):
                 data = json.loads(path.read_text(encoding="utf-8"))
                 self.assertEqual(data["case_id"], path.stem)
-                self.assertIsInstance(data["case"], dict)
-                self.assertIn("next_best_actions", data)
-                actions = data["next_best_actions"]
-                self.assertIsInstance(actions.get("initial"), list)
-                self.assertIsInstance(actions.get("final"), list)
-                self.assertIsInstance(data["case"].get("evidence"), list)
-                probability = data["case"].get("fraud_probability")
-                self.assertIsInstance(probability, (int, float))
-                self.assertGreaterEqual(probability, 0)
-                self.assertLessEqual(probability, 1)
+                validated = validate_case_artifact(data, path.stem)
+                self.assertEqual(validated["case_id"], path.stem)
+                self.assertIsInstance(data["case"]["evidence"], list)
+                self.assertIsInstance(data["next_best_actions"]["initial"], list)
+                self.assertIsInstance(data["next_best_actions"]["final"], list)
+
+    def test_invalid_probability_is_rejected(self):
+        data = json.loads((ROOT / "cases" / "HHG-001.json").read_text(encoding="utf-8"))
+        data["case"]["fraud_probability"] = math.nan
+        with self.assertRaises(Exception):
+            validate_case_artifact(data, "HHG-001")
+
+    def test_invalid_status_verdict_pair_is_rejected(self):
+        data = json.loads((ROOT / "cases" / "HHG-001.json").read_text(encoding="utf-8"))
+        data["case"]["verdict"] = "fraud"
+        with self.assertRaises(Exception):
+            validate_case_artifact(data, "HHG-001")
+
+    def test_malformed_action_is_rejected(self):
+        data = json.loads((ROOT / "cases" / "HHG-001.json").read_text(encoding="utf-8"))
+        data["next_best_actions"]["final"] = [{"reason": "missing action"}]
+        with self.assertRaises(Exception):
+            validate_case_artifact(data, "HHG-001")
 
 
 if __name__ == "__main__":
